@@ -22,14 +22,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        if (user == null) throw new NullEntityReferenceException("User has been tried to create empty object");
         return userRepository.save(user);
     }
 
     @Override
     public User readById(long id) {
-        Supplier<NullEntityReferenceException> supplier = () -> {return new NullEntityReferenceException("User has been tried to update empty object");};
-        Optional<User> optional = Optional.ofNullable(userRepository.findById(id).orElseThrow(supplier));
+
+        Optional<User> optional = userRepository.findById(id);
             return optional.get();
     }
 

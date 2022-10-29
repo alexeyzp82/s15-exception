@@ -37,7 +37,7 @@ public class UserController {
 
         user.setPassword(user.getPassword());
         user.setRole(roleService.readById(2));
-       //if(user.hasEmptyField()) throw new NullEntityReferenceException();
+
         User newUser = userService.create(user);
         return "redirect:/todos/all/users/" + newUser.getId();
     }

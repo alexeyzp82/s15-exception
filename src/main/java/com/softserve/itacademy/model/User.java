@@ -45,14 +45,7 @@ public class User  {
 
     public User() {
     }
-/*
-    public boolean hasEmptyField()
-    {
-        if(this.getFirstName() == null || this.getLastName() == null || this.getPassword() == null || this.getEmail() == null ) return true;
-        return false;
-    }
 
- */
     public long getId() {
         return id;
     }
