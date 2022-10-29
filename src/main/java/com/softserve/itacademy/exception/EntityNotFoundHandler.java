@@ -12,7 +12,7 @@ import java.util.Map;
 
 @ControllerAdvice
 @Slf4j
-public class EntityNotFound {
+public class EntityNotFoundHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ModelAndView handler(Exception e, HttpServletRequest httpServletRequest)
