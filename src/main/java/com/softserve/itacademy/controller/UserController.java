@@ -1,5 +1,6 @@
 package com.softserve.itacademy.controller;
 
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.model.User;
 import com.softserve.itacademy.service.RoleService;
 import com.softserve.itacademy.service.UserService;
@@ -19,6 +20,7 @@ public class UserController {
     public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
+
     }
 
     @GetMapping("/create")
@@ -32,8 +34,10 @@ public class UserController {
         if (result.hasErrors()) {
             return "create-user";
         }
+
         user.setPassword(user.getPassword());
         user.setRole(roleService.readById(2));
+       //if(user.hasEmptyField()) throw new NullEntityReferenceException();
         User newUser = userService.create(user);
         return "redirect:/todos/all/users/" + newUser.getId();
     }
@@ -48,6 +52,7 @@ public class UserController {
     @GetMapping("/{id}/update")
     public String update(@PathVariable long id, Model model) {
         User user = userService.readById(id);
+
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.getAll());
         return "update-user";

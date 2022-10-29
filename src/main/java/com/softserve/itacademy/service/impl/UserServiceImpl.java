@@ -1,5 +1,6 @@
 package com.softserve.itacademy.service.impl;
 
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.model.User;
 import com.softserve.itacademy.repository.UserRepository;
 import com.softserve.itacademy.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,12 +22,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-            return userRepository.save(user);
+        if (user == null) throw new NullEntityReferenceException("User has been tried to create empty object");
+        return userRepository.save(user);
     }
 
     @Override
     public User readById(long id) {
-        Optional<User> optional = userRepository.findById(id);
+        Supplier<NullEntityReferenceException> supplier = () -> {return new NullEntityReferenceException("User has been tried to update empty object");};
+        Optional<User> optional = Optional.ofNullable(userRepository.findById(id).orElseThrow(supplier));
             return optional.get();
     }
 
