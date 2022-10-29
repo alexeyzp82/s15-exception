@@ -50,4 +50,9 @@ public class UserServiceImpl implements UserService {
         return users.isEmpty() ? new ArrayList<>() : users;
     }
 
+    @Override
+    public boolean existById(long id) {
+        return userRepository.existsById(id);
+    }
+
 }

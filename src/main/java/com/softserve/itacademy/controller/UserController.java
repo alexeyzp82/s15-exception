@@ -1,5 +1,6 @@
 package com.softserve.itacademy.controller;
 
+import com.softserve.itacademy.exception.EntityNotFoundException;
 import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.model.User;
 import com.softserve.itacademy.service.RoleService;
@@ -34,7 +35,10 @@ public class UserController {
         if (result.hasErrors()) {
             return "create-user";
         }
-
+          if (user == null)
+          {
+              throw new NullEntityReferenceException("This entity is null");
+          }
         user.setPassword(user.getPassword());
         user.setRole(roleService.readById(2));
 
@@ -44,9 +48,15 @@ public class UserController {
 
     @GetMapping("/{id}/read")
     public String read(@PathVariable long id, Model model) {
-        User user = userService.readById(id);
-        model.addAttribute("user", user);
-        return "user-info";
+           if(userService.existById(id)) {
+               User user = userService.readById(id);
+               model.addAttribute("user", user);
+               return "user-info";
+           }
+           else
+           {
+               throw new EntityNotFoundException("This entity has not been found");
+           }
     }
 
     @GetMapping("/{id}/update")
@@ -61,8 +71,14 @@ public class UserController {
 
     @GetMapping("/{id}/delete")
     public String delete(@PathVariable("id") long id) {
-        userService.delete(id);
-        return "redirect:/users/all";
+        if (userService.existById(id)) {
+            userService.delete(id);
+            return "redirect:/users/all";
+        }
+        else
+        {
+            throw new EntityNotFoundException("This entity has not been found");
+        }
     }
 
     @GetMapping("/all")

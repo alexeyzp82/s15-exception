@@ -11,4 +11,6 @@ public interface UserService {
     void delete(long id);
     List<User> getAll();
 
+    boolean existById(long id);
+
 }
