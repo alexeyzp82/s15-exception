@@ -50,9 +50,6 @@ public class TaskController {
             return "create-task";
         }
 
-
-
-
         Task task = TaskTransformer.convertToEntity(
                 taskDto,
                 todoService.readById(taskDto.getTodoId()),

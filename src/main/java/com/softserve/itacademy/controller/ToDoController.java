@@ -137,6 +137,7 @@ public class ToDoController {
 
     @GetMapping("/{id}/remove")
     public String removeCollaborator(@PathVariable long id, @RequestParam("user_id") long userId) {
+
         ToDo todo = todoService.readById(id);
         List<User> collaborators = todo.getCollaborators();
         collaborators.remove(userService.readById(userId));
