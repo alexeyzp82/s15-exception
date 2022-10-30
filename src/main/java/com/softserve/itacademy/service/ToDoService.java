@@ -12,4 +12,6 @@ public interface ToDoService {
 
     List<ToDo> getAll();
     List<ToDo> getByUserId(long userId);
+
+    boolean existById(long id);
 }

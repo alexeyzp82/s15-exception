@@ -12,4 +12,5 @@ public interface TaskService {
 
     List<Task> getAll();
     List<Task> getByTodoId(long todoId);
+    boolean existById(long id);
 }

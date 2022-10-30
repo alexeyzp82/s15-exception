@@ -32,13 +32,15 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(@Validated @ModelAttribute("user") User user, BindingResult result) {
-        if (result.hasErrors()) {
-            return "create-user";
+
+        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() || user.getPassword().isEmpty() || user.getEmail().isEmpty() )
+        {
+            throw new NullEntityReferenceException("This entity is Empty");
         }
-          if (user == null)
-          {
-              throw new NullEntityReferenceException("This entity is null");
-          }
+        if (result.hasErrors()) {
+            throw new NullEntityReferenceException("You have entered something incorrectly");
+        }
+
         user.setPassword(user.getPassword());
         user.setRole(roleService.readById(2));
 
@@ -48,6 +50,7 @@ public class UserController {
 
     @GetMapping("/{id}/read")
     public String read(@PathVariable long id, Model model) {
+
            if(userService.existById(id)) {
                User user = userService.readById(id);
                model.addAttribute("user", user);
@@ -61,11 +64,30 @@ public class UserController {
 
     @GetMapping("/{id}/update")
     public String update(@PathVariable long id, Model model) {
-        User user = userService.readById(id);
 
-        model.addAttribute("user", user);
-        model.addAttribute("roles", roleService.getAll());
-        return "update-user";
+           User user = userService.readById(id);
+
+           model.addAttribute("user", user);
+           model.addAttribute("roles", roleService.getAll());
+           return "update-user";
+    }
+
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable long id, Model model, @Validated @ModelAttribute("user") User user, @RequestParam("roleId") long roleId, BindingResult result) {
+
+        User oldUser = userService.readById(id);
+        if (result.hasErrors()) {
+            user.setRole(oldUser.getRole());
+            model.addAttribute("roles", roleService.getAll());
+            return "update-user";
+        }
+        if (oldUser.getRole().getName().equals("USER")) {
+            user.setRole(oldUser.getRole());
+        } else {
+            user.setRole(roleService.readById(roleId));
+        }
+        userService.update(user);
+        return "redirect:/users/" + id + "/read";
     }
 
 

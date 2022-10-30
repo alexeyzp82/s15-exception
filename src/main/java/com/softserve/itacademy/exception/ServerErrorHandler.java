@@ -1,5 +1,6 @@
 package com.softserve.itacademy.exception;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,15 +13,14 @@ import java.util.Map;
 
 @ControllerAdvice
 @Slf4j
-public class EntityNotFoundHandler {
+public class ServerErrorHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ModelAndView handler(Exception e, HttpServletRequest httpServletRequest)
-    {
+    @ExceptionHandler(NullEntityReferenceException.class)
+    public ModelAndView handler(Exception e, HttpServletRequest httpServletRequest) {
         log.error("Message: {}, url: {}", e.getMessage(), httpServletRequest.getRequestURL());
         Map<String, String> modelMessage = new HashMap<>();
         modelMessage.put("error", e.getMessage());
-        ModelAndView modelAndView = new ModelAndView("not-found", modelMessage, HttpStatus.NOT_FOUND );
+        ModelAndView modelAndView = new ModelAndView("500page",modelMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 
         return modelAndView;
     }

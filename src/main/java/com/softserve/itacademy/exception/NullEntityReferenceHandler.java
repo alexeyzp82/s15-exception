@@ -16,12 +16,12 @@ import java.util.Map;
 public class NullEntityReferenceHandler {
 
     @ExceptionHandler(NullEntityReferenceException.class)
-    public ModelAndView handler(Exception e, HttpServletRequest httpServletRequest)
-    {
+    public ModelAndView handler(Exception e, HttpServletRequest httpServletRequest) {
         log.error("Message: {}, url: {}", e.getMessage(), httpServletRequest.getRequestURL());
         Map<String, String> modelMessage = new HashMap<>();
         modelMessage.put("error", e.getMessage());
-        ModelAndView modelAndView = new ModelAndView("bad-request",modelMessage, HttpStatus.BAD_REQUEST );
+        ModelAndView modelAndView = new ModelAndView("bad-request",modelMessage, HttpStatus.BAD_REQUEST);
+      
         return modelAndView;
     }
 }

@@ -2,6 +2,8 @@ package com.softserve.itacademy.controller;
 
 import com.softserve.itacademy.dto.TaskDto;
 import com.softserve.itacademy.dto.TaskTransformer;
+import com.softserve.itacademy.exception.EntityNotFoundException;
+import com.softserve.itacademy.exception.NullEntityReferenceException;
 import com.softserve.itacademy.model.Priority;
 import com.softserve.itacademy.model.Task;
 import com.softserve.itacademy.service.StateService;
@@ -37,11 +39,20 @@ public class TaskController {
     @PostMapping("/create/todos/{todo_id}")
     public String create(@PathVariable("todo_id") long todoId, Model model,
                          @Validated @ModelAttribute("task") TaskDto taskDto, BindingResult result) {
+        if (taskDto.getName().isEmpty()  )
+        {
+            throw new NullEntityReferenceException("This entity is Empty");
+        }
+
         if (result.hasErrors()) {
             model.addAttribute("todo", todoService.readById(todoId));
             model.addAttribute("priorities", Priority.values());
             return "create-task";
         }
+
+
+
+
         Task task = TaskTransformer.convertToEntity(
                 taskDto,
                 todoService.readById(taskDto.getTodoId()),
@@ -63,6 +74,12 @@ public class TaskController {
     @PostMapping("/{task_id}/update/todos/{todo_id}")
     public String update(@PathVariable("task_id") long taskId, @PathVariable("todo_id") long todoId, Model model,
                          @Validated @ModelAttribute("task")TaskDto taskDto, BindingResult result) {
+
+        if (taskDto.getName().isEmpty() )
+        {
+            throw new NullEntityReferenceException("This entity is Empty");
+        }
+
         if (result.hasErrors()) {
             model.addAttribute("priorities", Priority.values());
             model.addAttribute("states", stateService.getAll());
@@ -79,7 +96,14 @@ public class TaskController {
 
     @GetMapping("/{task_id}/delete/todos/{todo_id}")
     public String delete(@PathVariable("task_id") long taskId, @PathVariable("todo_id") long todoId) {
-        taskService.delete(taskId);
-        return "redirect:/todos/" + todoId + "/tasks";
+
+        if (taskService.existById(taskId)) {
+            taskService.delete(taskId);
+            return "redirect:/todos/" + todoId + "/tasks";
+        }
+        else  {
+            throw new EntityNotFoundException("This entity has not been found ");
+        }
+
     }
 }

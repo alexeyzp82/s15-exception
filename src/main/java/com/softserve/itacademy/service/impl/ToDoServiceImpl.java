@@ -52,4 +52,10 @@ public class ToDoServiceImpl implements ToDoService {
         List<ToDo> todos = todoRepository.getByUserId(userId);
         return todos.isEmpty() ? new ArrayList<>() : todos;
     }
+
+    @Override
+    public boolean existById(long id) {
+        return todoRepository.existsById(id);
+    }
+
 }
